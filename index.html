@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kesh_v</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @font-face {
+            font-family: 'Rusilla Serif';
+            src: url('RusillaSerif-2OZpl.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            /* Slower scroll behavior */
+            scroll-timeline: --page-scroll block;
+            scroll-timeline-axis: block;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            height: 200vh;
+            /* Make the page scrollable */
+            overflow-x: hidden;
+        }
+
+        section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #home {
+            z-index: 2;
+        }
+
+        #second-page {
+            background-color: #121212;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            color: white;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            padding: 0;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #second-page.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .second-page-header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            gap: 24px;
+        }
+
+        .second-page-header .search-container {
+            flex: 0 0 auto;
+            margin-right: 0;
+            margin-left: auto;
+        }
+
+        .second-page-header .corner-logo {
+            font-weight: normal;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            color: white;
+            letter-spacing: max(1px, 0.2vw);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            margin-left: 0;
+        }
+
+        .second-page-header .corner-logo .char.k {
+            font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+            font-weight: bold;
+        }
+
+        .second-page-header .corner-logo .char.e {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .second-page-header .corner-logo .char.s {
+            font-family: 'Verdana', 'Geneva', sans-serif;
+            font-weight: 600;
+        }
+
+        .second-page-header .corner-logo .char.h {
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-weight: bold;
+        }
+
+        .second-page-header .corner-logo .char.underscore {
+            font-family: 'Impact', 'Charcoal', sans-serif;
+            font-weight: normal;
+        }
+
+        .second-page-header .corner-logo .char.v {
+            font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
+            font-weight: bold;
+        }
+
+        .second-page-header .corner-logo:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-container.visible,
+        .corner-logo.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .second-page-content {
+            width: 100%;
+            padding: 40px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+        }
+
+        #second-page h2 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        #second-page p {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            transition: opacity 1s ease, transform 1s ease;
+            /* Slower transition */
+            padding: 20px;
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            text-align: center;
+            letter-spacing: max(1px, 0.3vw);
+            font-weight: normal;
+        }
+
+        .char {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .char.k {
+            font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+            font-weight: bold;
+        }
+
+        .char.e {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .char.s {
+            font-family: 'Verdana', 'Geneva', sans-serif;
+            font-weight: 600;
+        }
+
+        .char.h {
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-weight: bold;
+        }
+
+        .char.underscore {
+            font-family: 'Impact', 'Charcoal', sans-serif;
+            font-weight: normal;
+        }
+
+        .char.v {
+            font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
+            font-weight: bold;
+        }
+
+        .char {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .char.animating {
+            animation: alphabetRoll 0.8s ease forwards;
+            /* Slower animation */
+        }
+
+        @keyframes alphabetRoll {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+                text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+            }
+
+            20% {
+                transform: translateY(max(-25px, -5vw));
+                opacity: 0;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+
+            50% {
+                transform: translateY(max(25px, 5vw));
+                opacity: 0;
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            }
+
+            80% {
+                transform: translateY(0);
+                opacity: 0.7;
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+            transition: opacity 0.5s ease;
+        }
+
+        .scroll-indicator.hidden {
+            opacity: 0;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0) translateX(-50%);
+            }
+
+            40% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+
+            60% {
+                transform: translateY(-5px) translateX(-50%);
+            }
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        @media (min-width: 769px) {
+            .search-box {
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                top: 15px;
+                right: 20px;
+                width: auto;
+                max-width: 70%;
+            }
+        }
+
+        @media (max-width: 500px) {
+            /* Hide history button on small screens */
+            .history-btn {
+                display: none !important;
+            }
+
+            /* Adjust header layout when history is hidden */
+            .second-page-header {
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .second-page-header .search-container {
+                flex: 1;
+                margin-right: 0;
+            }
+
+            .search-container {
+                top: 10px;
+                right: 15px;
+                left: 15px;
+                width: calc(100% - 30px);
+                display: flex;
+                justify-content: center;
+            }
+
+            .search-box {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .corner-logo {
+                top: 60px;
+                left: 10px;
+            }
+
+            .search-input {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                font-size: 1rem;
+                padding: 10px 12px;
+                width: 100%;
+                min-width: 0;
+                max-width: 100vw;
+            }
+
+            .search-input:hover {
+                width: 100%;
+            }
+
+            .search-input:focus {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-container {
+                top: 10px;
+                right: 15px;
+                left: 15px;
+                width: calc(100% - 30px);
+                display: flex;
+                justify-content: center;
+            }
+
+            .search-box {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .corner-logo {
+                top: 60px;
+                left: 10px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-input:focus {
+                width: 100%;
+            }
+        }
+
+        .search-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: clamp(8px, 2vw, 10px) clamp(10px, 3vw, 15px);
+            border-radius: 25px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            width: clamp(200px, 40vw, 400px);
+            transition: all 0.4s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .search-input:hover {
+            width: clamp(280px, 55vw, 550px);
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .search-input:focus {
+            width: clamp(300px, 60vw, 600px);
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s ease;
+        }
+
+        .search-input:focus::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(30px, 8vw, 40px);
+            height: clamp(30px, 8vw, 40px);
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .corner-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-weight: normal;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            color: white;
+            letter-spacing: max(1px, 0.2vw);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            /* Slower transition */
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .corner-logo .char.k {
+            font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+            font-weight: bold;
+        }
+
+        .corner-logo .char.e {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .corner-logo .char.s {
+            font-family: 'Verdana', 'Geneva', sans-serif;
+            font-weight: 600;
+        }
+
+        .corner-logo .char.h {
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-weight: bold;
+        }
+
+        .corner-logo .char.underscore {
+            font-family: 'Impact', 'Charcoal', sans-serif;
+            font-weight: normal;
+        }
+
+        .corner-logo .char.v {
+            font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
+            font-weight: bold;
+        }
+
+        .corner-logo.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .corner-logo:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .corner-logo::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .corner-logo:hover::after {
+            width: 100%;
+        }
+
+        .simple-intro {
+            text-align: center;
+            max-width: 80%;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* YouTube-like home grid */
+        .home-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: min(1200px, 95vw);
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .home-grid.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .home-grid-item {
+            flex: 0 0 calc(33.333% - 15px);
+            min-width: 280px;
+            max-width: min(400px, 30vw);
+            height: min(280px, 25vh);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .home-grid-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .home-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+        }
+
+        .home-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            max-height: min(168px, 15vh);
+        }
+
+        .home-grid-item:hover .home-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .home-thumbnail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-grid-item:hover .home-thumbnail-overlay {
+            opacity: 1;
+        }
+
+        .home-video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-weight: bold;
+        }
+
+        .home-video-info {
+            padding: 12px;
+        }
+
+        .home-video-title {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .home-channel-name {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 4px;
+        }
+
+        .home-video-stats {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .home-section-title {
+            font-family: 'Rusilla Serif', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .home-section-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .home-section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: rotate(180deg);
+        }
+
+        .refresh-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .simple-intro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.02) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            background-size: 200% 200%;
+            animation: gradientMove 8s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .simple-intro.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .simple-intro h2 {
+            font-family: 'Rusilla Serif', serif;
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: clamp(10px, 2vw, 15px);
+            font-weight: normal;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+            position: relative;
+            display: inline-block;
+        }
+
+        .simple-intro h2::before,
+        .simple-intro h2::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -3px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+            transition: width 1s ease;
+        }
+
+        .simple-intro h2::before {
+            left: 50%;
+        }
+
+        .simple-intro h2::after {
+            right: 50%;
+        }
+
+        .simple-intro.visible h2::before,
+        .simple-intro.visible h2::after {
+            width: 30%;
+        }
+
+        .simple-intro p {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .simple-intro .tagline {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 15px;
+            font-style: italic;
+            position: relative;
+            display: inline-block;
+        }
+
+        .simple-intro .tagline::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-50%);
+            transition: width 0.5s ease;
+        }
+
+        .simple-intro.visible .tagline::after {
+            width: 60%;
+            animation: pulseLine 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseLine {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                width: 40%;
+            }
+
+            50% {
+                opacity: 0.6;
+                width: 60%;
+            }
+        }
+
+        .simple-intro .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .simple-intro .feature {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 12px;
+            border-radius: 20px;
+            min-width: 120px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease, background 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
+        }
+
+        .simple-intro .feature:hover {
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .simple-intro .feature.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .simple-intro .feature:nth-child(1).visible {
+            transition-delay: 0.2s;
+        }
+
+        .simple-intro .feature:nth-child(2).visible {
+            transition-delay: 0.4s;
+        }
+
+        .simple-intro .feature:nth-child(3).visible {
+            transition-delay: 0.6s;
+        }
+
+        .simple-intro .feature svg {
+            margin-right: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            width: 12px;
+            height: 12px;
+        }
+
+        .simple-intro .feature span {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .simple-intro .get-started-btn {
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .simple-intro.visible .get-started-btn {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s, background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .simple-intro .get-started-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .simple-intro .get-started-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .simple-intro .get-started-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            border-radius: 100%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: all 0.5s ease;
+        }
+
+        .simple-intro .get-started-btn:hover::after {
+            opacity: 0.5;
+            transform: translate(-50%, -50%) scale(15);
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 1200px) {
+            .home-grid-item {
+                flex: 0 0 calc(33.333% - 15px);
+                max-width: min(380px, 28vw);
+                height: min(260px, 22vh);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .home-grid-item {
+                flex: 0 0 calc(50% - 10px);
+                max-width: min(350px, 45vw);
+                height: min(240px, 20vh);
+            }
+            
+            .second-page-content {
+                padding: 30px 15px 15px 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .home-grid-item {
+                flex: 0 0 100%;
+                max-width: min(400px, 90vw);
+                height: min(280px, 25vh);
+                margin-bottom: 15px;
+            }
+
+            .home-grid {
+                gap: 15px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .simple-intro {
+                padding: 15px;
+                max-width: 90%;
+            }
+
+            .simple-intro h2 {
+                font-size: clamp(1.2rem, 4vw, 1.6rem);
+                margin-bottom: 8px;
+            }
+
+            .simple-intro .tagline {
+                font-size: clamp(0.8rem, 2.5vw, 1rem);
+                margin-bottom: 10px;
+            }
+
+            .simple-intro p {
+                font-size: clamp(0.7rem, 2vw, 0.9rem);
+                margin-bottom: 8px;
+            }
+
+            .simple-intro .features {
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            /* Home grid responsive */
+            .home-grid {
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .home-grid-item {
+                flex: 0 0 calc(50% - 7.5px);
+                min-width: 200px;
+            }
+
+            /* Improve search container positioning */
+            .search-container {
+                top: 15px;
+                right: 20px;
+                width: auto;
+                max-width: 70%;
+            }
+
+            /* Adjust logo sizes */
+            .logo {
+                font-size: clamp(2rem, 8vw, 4rem);
+            }
+
+            .corner-logo {
+                font-size: clamp(1rem, 2.5vw, 1.3rem);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid-item {
+                flex: 0 0 100%;
+                min-width: 0;
+                max-width: 100vw;
+            }
+
+            .search-results,
+            .second-page-content {
+                padding: 6px !important;
+            }
+
+            .simple-intro {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .search-input {
+                font-size: 1rem;
+                padding: 10px 12px;
+                width: 100%;
+                min-width: 0;
+                max-width: 100vw;
+            }
+
+            .search-button {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+
+            .search-history-dropdown {
+                font-size: 1rem;
+                min-width: 0;
+                max-width: 100vw;
+                left: 0;
+                right: 0;
+            }
+
+            .corner-logo {
+                font-size: 1.1rem;
+                top: 10px;
+                left: 10px;
+            }
+
+            .scroll-indicator {
+                font-size: 0.8rem;
+                bottom: 10px;
+            }
+
+            .new-search-container {
+                margin-top: 18px;
+                padding-top: 10px;
+            }
+
+            .pagination {
+                gap: 4px;
+            }
+
+            .pagination-button {
+                font-size: 0.95rem;
+                padding: 6px 10px;
+                min-width: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .home-grid-item {
+                flex: 0 0 100%;
+                min-width: 0;
+            }
+
+            .home-grid {
+                gap: 12px;
+                padding: 10px;
+            }
+
+            .home-video-info {
+                padding: 10px;
+            }
+
+            .home-video-title {
+                font-size: 0.85rem;
+            }
+
+            .home-channel-name {
+                font-size: 0.75rem;
+            }
+
+            .home-video-stats {
+                font-size: 0.7rem;
+            }
+
+            /* Further reduce logo size on very small screens */
+            .logo {
+                font-size: clamp(1.5rem, 6vw, 3rem);
+            }
+
+            .corner-logo {
+                font-size: clamp(0.9rem, 2vw, 1.1rem);
+            }
+
+            /* Improve spacing on very small screens */
+            .second-page-content {
+                padding: 20px 10px 10px 10px;
+            }
+
+            .home-section-title {
+                font-size: clamp(1.2rem, 3vw, 1.5rem);
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .simple-intro {
+                max-width: 500px;
+            }
+        }
+
+        .search-results {
+            width: 95%;
+            max-width: min(1200px, 95vw);
+            padding: clamp(15px, 5vw, 20px);
+            display: none;
+            margin-bottom: 50px;
+        }
+
+        .search-results.visible {
+            display: block;
+        }
+
+        .search-results h3 {
+            font-family: 'Rusilla Serif', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .results-count {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            margin-bottom: 20px;
+        }
+
+        /* YouTube search results styling */
+        .search-result-item {
+            display: flex;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-thumbnail {
+            flex: 0 0 clamp(120px, 30%, 200px);
+            margin-right: 15px;
+            position: relative;
+        }
+
+        .result-thumbnail img {
+            width: 100%;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .result-thumbnail img:hover {
+            transform: scale(1.05);
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+            font-family: 'Arvo', serif;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .grid-item:hover .video-duration {
+            background-color: rgba(255, 0, 0, 0.8);
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-info h4 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            margin-bottom: 8px;
+        }
+
+        .result-info h4 a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .result-info h4 a:hover {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: underline;
+        }
+
+        .channel-info {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .result-description {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* YouTube flexbox grid layout */
+        .grid-results {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .grid-item {
+            flex: 0 0 calc(33.333% - 20px);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            max-width: min(400px, 30vw);
+            height: min(320px, 28vh);
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .grid-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .grid-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .grid-item:hover .grid-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .grid-info {
+            padding: 15px;
+        }
+
+        .grid-info h4 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            margin-bottom: 8px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 2.6em;
+        }
+
+        .grid-info h4 a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .grid-info h4 a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .grid-channel-info {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .grid-stats {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive grid adjustments */
+        @media (max-width: 1200px) {
+            .grid-item {
+                flex: 0 0 calc(33.333% - 15px);
+                max-width: min(380px, 28vw);
+                height: min(300px, 25vh);
+            }
+
+            .search-results {
+                max-width: 1200px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .grid-item {
+                flex: 0 0 calc(50% - 10px);
+                max-width: min(350px, 45vw);
+                height: min(280px, 22vh);
+            }
+
+            .grid-results {
+                gap: 12px;
+            }
+
+            .search-results {
+                width: 98%;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-item {
+                flex: 0 0 calc(50% - 10px);
+            }
+
+            .grid-results {
+                gap: 15px;
+            }
+
+            .search-results {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid-item {
+                flex: 0 0 100%;
+                max-width: min(400px, 90vw);
+                height: min(300px, 30vh);
+                margin-bottom: 15px;
+            }
+
+            .grid-results {
+                gap: 12px;
+            }
+
+            .search-results {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .result-thumbnail {
+                flex: 0 0 120px;
+                margin-right: 12px;
+            }
+
+            .result-info h4 {
+                font-size: 0.9rem;
+                margin-bottom: 6px;
+            }
+
+            .channel-info {
+                font-size: 0.75rem;
+                margin-bottom: 6px;
+            }
+
+            .result-description {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-item {
+                flex: 0 0 100%;
+            }
+
+            .grid-results {
+                gap: 15px;
+            }
+
+            .search-results {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        .loading-spinner:after {
+            content: " ";
+            display: block;
+            width: 32px;
+            height: 32px;
+            margin: 4px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: loading-spinner 1.2s linear infinite;
+        }
+
+        @keyframes loading-spinner {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Error message styling */
+        .error-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .error-message svg {
+            color: rgba(255, 0, 0, 0.7);
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .error-message p {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
+        .retry-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .retry-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .no-results {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .no-results svg {
+            color: rgba(255, 255, 255, 0.7);
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .no-results p {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
+        /* New search container and pagination */
+        .new-search-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .pagination-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-button:hover:not(.active, .disabled) {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .pagination-button.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: default;
+        }
+
+        .pagination-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-count {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Glowing effect for characters during animation */
+        .char.animating::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            animation: glowPulse 0.8s ease-out;
+        }
+
+        @keyframes glowPulse {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.8;
+            }
+
+            100% {
+                width: clamp(40px, 10vw, 80px);
+                height: clamp(40px, 10vw, 80px);
+                opacity: 0;
+            }
+        }
+
+        /* Media Queries for better responsiveness */
+        @media (max-width: 768px) {
+            .search-container {
+                top: 15px;
+                right: 20px;
+            }
+
+            .corner-logo {
+                top: 15px;
+                left: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-container {
+                top: 10px;
+                right: 15px;
+                left: 15px;
+                width: calc(100% - 30px);
+                display: flex;
+                justify-content: center;
+            }
+
+            .corner-logo {
+                top: 60px;
+                left: 10px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-input:hover {
+                width: 100%;
+            }
+
+            .search-input:focus {
+                width: 100%;
+            }
+        }
+
+        /* Fix for very small devices */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                align-items: flex-start;
+                padding-top: 50px;
+            }
+
+            .scroll-indicator {
+                bottom: 10px;
+            }
+        }
+
+        /* Animation for logo disappearing */
+        .container.hidden {
+            opacity: 0;
+            transform: translateY(-50px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Add styles for the player view */
+        #player-section {
+            display: none;
+            width: 100vw;
+            min-height: 100vh;
+            background: #111;
+            color: #fff;
+            font-family: 'Arvo', serif;
+            position: relative;
+        }
+
+        .player-main-layout {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            width: 100vw;
+            max-width: 100vw;
+        }
+
+        .player-left-panel {
+            flex: 3 1 0;
+            min-width: 0;
+            padding: 40px 30px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .player-video-frame {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .player-desc-box {
+            margin-top: 24px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 8px;
+            padding: 18px 20px;
+            color: #eee;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            min-height: 60px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .player-back-arrow {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: #111;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            padding: 6px 10px 6px 4px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            transition: background 0.2s, box-shadow 0.2s, border 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .player-back-arrow:hover {
+            background: #222;
+            border: 2px solid #333;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .player-back-arrow svg {
+            width: 28px;
+            height: 28px;
+            display: block;
+            stroke: #fff;
+        }
+
+        .player-right-panel {
+            flex: 1 1 0;
+            min-width: 220px;
+            max-width: 400px;
+            background: #181818;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 60px 10px 0 10px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .player-digital-clock {
+            width: 90%;
+            max-width: 260px;
+            background: #111;
+            color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.2rem;
+            text-align: center;
+            padding: 32px 0 24px 0;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            user-select: none;
+        }
+
+        @media (max-width: 900px) {
+            .player-main-layout {
+                flex-direction: column;
+            }
+
+            .player-left-panel,
+            .player-right-panel {
+                width: 100%;
+                max-width: 100vw;
+                padding: 20px 5vw 0 5vw;
+            }
+
+            .player-right-panel {
+                min-width: 0;
+                max-width: 100vw;
+                box-shadow: none;
+                align-items: flex-end;
+                padding-top: 20px;
+            }
+
+            .player-digital-clock {
+                margin: 0 0 20px 0;
+            }
+
+            .player-back-arrow {
+                top: 10px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .player-left-panel,
+            .player-right-panel {
+                padding: 10px 2vw 0 2vw;
+            }
+
+            .player-digital-clock {
+                font-size: 1.3rem;
+                padding: 18px 0 12px 0;
+            }
+        }
+
+        .history-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-family: 'Arvo', serif;
+            font-size: 1rem;
+            border-radius: 20px;
+            padding: 8px 22px;
+            margin-left: 18px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .history-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .history-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .history-modal.active {
+            display: flex;
+        }
+
+        .history-modal-content {
+            background: #181818;
+            color: #fff;
+            border-radius: 12px;
+            padding: 32px 24px 24px 24px;
+            min-width: 320px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        @media (max-width: 600px) {
+            .history-modal-content {
+                min-width: 280px;
+                padding: 24px 16px 16px 16px;
+                max-width: 95vw;
+            }
+
+            .history-modal-content h3 {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+
+            .history-list li {
+                padding: 8px 0;
+                font-size: 0.9rem;
+            }
+        }
+
+        .history-modal-content h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            font-family: 'Rusilla Serif', serif;
+            margin-bottom: 18px;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .history-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .history-list li:last-child {
+            border-bottom: none;
+        }
+
+        .history-list li:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .history-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .search-history-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #181818;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+            z-index: 1000;
+            max-height: 220px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-history-dropdown.visible {
+            display: block;
+        }
+
+        .search-history-dropdown .dropdown-item {
+            padding: 10px 18px;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.2s;
+        }
+
+        .search-history-dropdown .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-history-dropdown .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-box {
+            position: relative;
+            /* Needed for absolute dropdown */
+        }
+
+        @media (max-width: 600px) {
+            .grid-item {
+                flex: 0 0 100%;
+                min-width: 0;
+                max-width: 100vw;
+            }
+
+            .search-results,
+            .second-page-content {
+                padding: 6px !important;
+            }
+
+            .simple-intro {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .search-input {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                font-size: 1rem;
+                padding: 10px 12px;
+                width: 100%;
+                min-width: 0;
+                max-width: 100vw;
+            }
+
+            .search-button {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+
+            .history-btn {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                font-size: 0.95rem;
+                padding: 7px 14px;
+                margin-left: 8px;
+            }
+
+            .search-history-dropdown {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                font-size: 1rem;
+                min-width: 0;
+                max-width: 100vw;
+                left: 0;
+                right: 0;
+            }
+
+            .corner-logo {
+                font-size: 1.1rem;
+                top: 10px;
+                left: 10px;
+            }
+
+            .scroll-indicator {
+                font-size: 0.8rem;
+                bottom: 10px;
+            }
+
+            .new-search-container {
+                margin-top: 18px;
+                padding-top: 10px;
+            }
+
+            .pagination {
+                gap: 4px;
+            }
+
+            .pagination-button {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                font-size: 0.95rem;
+                padding: 6px 10px;
+                min-width: 28px;
+            }
+        }
+
+        html,
+        body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="home">
+        <div class="container" id="logo-container">
+            <div class="logo" id="logo">Kesh_v</div>
+        </div>
+        <div class="scroll-indicator" id="scroll-indicator">Scroll Down</div>
+    </section>
+
+    <section id="second-page">
+        <div class="second-page-header">
+            <div class="corner-logo" id="corner-logo">Kesh_v</div>
+            <div class="search-container" id="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search for videos...">
+                    <div class="search-history-dropdown" id="search-history-dropdown" style="display:none;"></div>
+                    <button class="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <button class="history-btn" id="history-btn">History</button>
+        </div>
+
+        <div class="second-page-content">
+            <!-- YouTube-like Home Grid -->
+            <div class="home-section-title" id="home-section-title">
+                Random Videos
+                <button class="refresh-btn" onclick="refreshRecommendations()" title="Refresh recommendations">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="home-grid" id="home-grid">
+                <!-- Grid items will be populated here -->
+            </div>
+
+            <div class="search-results" id="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- History Modal -->
+    <div class="history-modal" id="history-modal">
+        <div class="history-modal-content">
+            <button class="history-close" id="history-close">&times;</button>
+            <h3>Search History</h3>
+            <ul class="history-list" id="history-list">
+                <!-- History items will be populated here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const logo = document.getElementById('logo');
+        const text = logo.textContent;
+        const chars = text.split('');
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>/?~`"\'\\';
+        const logoContainer = document.getElementById('logo-container');
+        const secondPage = document.getElementById('second-page');
+        const searchContainer = document.getElementById('search-container');
+        const cornerLogo = document.getElementById('corner-logo');
+        const searchResults = document.getElementById('search-results');
+        const scrollIndicator = document.getElementById('scroll-indicator');
+        const historyBtn = document.getElementById('history-btn');
+        const historyModal = document.getElementById('history-modal');
+        const historyCloseBtn = document.getElementById('history-close');
+        const historyList = document.getElementById('history-list');
+        const searchHistoryDropdown = document.getElementById('search-history-dropdown');
+        const homeSectionTitle = document.getElementById('home-section-title');
+        const homeGrid = document.getElementById('home-grid');
+
+        // Global variables for pagination
+        let currentSearchResults = [];
+        let currentQuery = '';
+        let currentPage = 1;
+        const resultsPerPage = 12; // Show 12 videos per page in grid layout
+
+        // Function to change page - defined in global scope
+        window.changePage = function (page) {
+            if (page < 1 || page > Math.ceil(currentSearchResults.length / resultsPerPage)) {
+                return;
+            }
+            currentPage = page;
+            displayResultsPage(page);
+        };
+
+        // Function to handle new search button click
+        window.newSearch = function () {
+            searchInput.value = '';
+            searchInput.focus();
+
+            // Show the home grid again if search results were visible
+            if (searchResults.classList.contains('visible')) {
+                searchResults.classList.remove('visible');
+                setTimeout(() => {
+                    homeSectionTitle.classList.add('visible');
+                    homeGrid.classList.add('visible');
+                    // Refresh with new random recommendations
+                    populateHomeGrid();
+                }, 100);
+            }
+        };
+
+
+
+        // Function to create multi-font logo
+        function createMultiFontLogo(element) {
+            const text = element.textContent;
+            const chars = text.split('');
+            element.textContent = '';
+            
+            chars.forEach(char => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'char';
+                span.dataset.originalChar = char;
+                
+                // Assign specific font classes based on character
+                if (char === 'K') {
+                    span.classList.add('k');
+                } else if (char === 'e') {
+                    span.classList.add('e');
+                } else if (char === 's') {
+                    span.classList.add('s');
+                } else if (char === 'h') {
+                    span.classList.add('h');
+                } else if (char === '_') {
+                    span.classList.add('underscore');
+                } else if (char === 'v') {
+                    span.classList.add('v');
+                }
+                
+                element.appendChild(span);
+            });
+        }
+
+        // Create multi-font logos
+        createMultiFontLogo(logo);
+        createMultiFontLogo(cornerLogo);
+
+        let lastScrollY = window.scrollY;
+        let scrollThreshold = 1; // Ultra-sensitive threshold - trigger on even the slightest scroll
+        let isAnimating = false;
+        let scrollTimeout;
+        let lastScrollTime = 0;
+        let scrollCooldown = 300; // Cooldown between scroll triggers in milliseconds
+        let isSecondPageVisible = false;
+
+        // Function to get a random character
+        function getRandomChar() {
+            return characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        // Function to get a set of random characters excluding the original
+        function getRandomChars(originalChar, count) {
+            const result = [];
+            for (let i = 0; i < count; i++) {
+                let randomChar;
+                do {
+                    randomChar = getRandomChar();
+                } while (randomChar === originalChar);
+                result.push(randomChar);
+            }
+            return result;
+        }
+
+        // Use wheel event for more sensitive detection
+        window.addEventListener('wheel', (e) => {
+            const now = Date.now();
+            // Only trigger if we're past the cooldown period
+            if (now - lastScrollTime > scrollCooldown && !isAnimating) {
+                lastScrollTime = now;
+                handleScroll(true);
+            }
+        });
+
+        // Keep the scroll event for mobile/touch devices
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const now = Date.now();
+                if (now - lastScrollTime > scrollCooldown && !isAnimating) {
+                    lastScrollTime = now;
+                    handleScroll(false);
+                }
+            }, 10); // Very short debounce time
+        });
+
+        // Handle touch events for mobile
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            const now = Date.now();
+            if (now - lastScrollTime > scrollCooldown && !isAnimating) {
+                const touchY = e.touches[0].clientY;
+                const diff = Math.abs(touchY - touchStartY);
+
+                if (diff > 5) { // Small threshold for touch movement
+                    lastScrollTime = now;
+                    handleScroll(true);
+                    touchStartY = touchY;
+                }
+            }
+        });
+
+        function handleScroll(forceAnimation = false) {
+            const currentScrollY = window.scrollY;
+            const scrollDifference = Math.abs(currentScrollY - lastScrollY);
+
+            // Show/hide the main logo based on scroll position
+            if (currentScrollY > window.innerHeight * 0.2) {
+                // Make the logo completely disappear when reaching the second page
+                logoContainer.classList.add('hidden');
+                scrollIndicator.classList.add('hidden');
+                isSecondPageVisible = true;
+            } else {
+                // Only show the logo again if we're scrolling back to the top
+                // and we're not in search mode
+                if (!searchResults.classList.contains('visible')) {
+                    logoContainer.classList.remove('hidden');
+                    scrollIndicator.classList.remove('hidden');
+                    isSecondPageVisible = false;
+                }
+            }
+
+            // Show second page when scrolled enough - with slower threshold
+            if (currentScrollY > window.innerHeight * 0.25) {
+                secondPage.classList.add('visible');
+                // Show search bar and corner logo with longer delay for better visual effect
+                setTimeout(() => {
+                    searchContainer.classList.add('visible');
+                    cornerLogo.classList.add('visible');
+
+                    // Show home grid with delay
+                    setTimeout(() => {
+                        homeSectionTitle.classList.add('visible');
+                        homeGrid.classList.add('visible');
+                        populateHomeGrid();
+                    }, 800);
+                }, 500); // Longer delay
+            } else {
+                secondPage.classList.remove('visible');
+                searchContainer.classList.remove('visible');
+                cornerLogo.classList.remove('visible');
+                homeSectionTitle.classList.remove('visible');
+                homeGrid.classList.remove('visible');
+            }
+
+            // Always trigger animation on any scroll if forceAnimation is true
+            // or if the scroll difference exceeds threshold
+            // Only animate if the logo is visible
+            if ((forceAnimation || scrollDifference > scrollThreshold) && !isAnimating && !logoContainer.classList.contains('hidden')) {
+                isAnimating = true;
+
+                const charElements = document.querySelectorAll('.char');
+
+                // Randomly select which characters to animate (between 1 and all characters)
+                const numToAnimate = Math.floor(Math.random() * charElements.length) + 1;
+                const indicesToAnimate = [];
+
+                // Select random indices to animate
+                while (indicesToAnimate.length < numToAnimate) {
+                    const randomIndex = Math.floor(Math.random() * charElements.length);
+                    if (!indicesToAnimate.includes(randomIndex)) {
+                        indicesToAnimate.push(randomIndex);
+                    }
+                }
+
+                // Sort indices for sequential animation
+                indicesToAnimate.sort((a, b) => a - b);
+
+                // Animate the selected characters
+                indicesToAnimate.forEach((index, i) => {
+                    setTimeout(() => {
+                        animateChar(charElements[index]);
+                    }, i * 80); // Shorter stagger for more responsive feel
+                });
+            }
+
+            lastScrollY = currentScrollY;
+        }
+
+        function animateChar(charElement) {
+            charElement.classList.add('animating');
+
+            const originalChar = charElement.dataset.originalChar;
+            let iterations = 0;
+            const maxIterations = Math.floor(Math.random() * 3) + 4; // 4-7 iterations for faster response
+
+            // Pre-generate random characters for smoother animation
+            const randomChars = getRandomChars(originalChar, maxIterations);
+
+            const interval = setInterval(() => {
+                if (iterations < maxIterations) {
+                    // Use pre-generated random character
+                    charElement.textContent = randomChars[iterations];
+                    iterations++;
+                } else {
+                    // Return to original character
+                    charElement.textContent = originalChar;
+                    clearInterval(interval);
+
+                    // Add a slight delay before removing the animating class
+                    setTimeout(() => {
+                        charElement.classList.remove('animating');
+
+                        // Count completed animations
+                        const animatingChars = document.querySelectorAll('.char.animating');
+
+                        if (animatingChars.length === 0) {
+                            setTimeout(() => {
+                                isAnimating = false;
+                            }, 200); // Short cooldown between animations
+                        }
+                    }, 100);
+                }
+            }, 60); // Faster iteration for quicker response
+        }
+
+        // Add search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchButton = document.querySelector('.search-button');
+        const YOUTUBE_API_KEY = 'AIzaSyCmHFtuxHYX4mCQft0h5OURezhmAnGVK4U';
+
+        searchButton.addEventListener('click', () => {
+            performSearch();
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Add keyboard shortcuts for testing
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            // Escape to close history modal
+            if (e.key === 'Escape' && historyModal.classList.contains('active')) {
+                historyModal.classList.remove('active');
+            }
+        });
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                console.log('Performing search for:', query);
+                
+                // Save search to history
+                saveHistory(query);
+                
+                // Hide home grid
+                homeSectionTitle.classList.remove('visible');
+                homeGrid.classList.remove('visible');
+
+                // Show loading state
+                searchResults.innerHTML = `
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Searching for "${query}"...</p>
+                    </div>
+                `;
+                searchResults.classList.add('visible');
+
+                // Make sure the main logo is completely hidden when in search mode
+                logoContainer.classList.add('hidden');
+                scrollIndicator.classList.add('hidden');
+
+                // Call YouTube API
+                searchYouTube(query);
+
+                // Clear search input
+                searchInput.value = '';
+
+                // Focus on the search results section
+                secondPage.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            } else {
+                console.log('Empty search query');
+            }
+        }
+
+        function searchYouTube(query) {
+            const maxResults = 50; // Maximum allowed by YouTube API per request
+            
+            console.log('Starting YouTube search for:', query);
+            console.log('API Key:', YOUTUBE_API_KEY);
+            
+            // Show loading state
+            searchResults.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Searching for "${query}"...</p>
+                </div>
+            `;
+            searchResults.classList.add('visible');
+            
+            // First search for videos
+            const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResults}&type=video&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}`;
+            
+            console.log('Search URL:', searchUrl);
+
+            fetch(searchUrl)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response ok:', response.ok);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Search API response:', data);
+                    console.log('Number of items found:', data.items ? data.items.length : 0);
+                    
+                    if (!data.items || data.items.length === 0) {
+                        console.log('No items found in search results');
+                        displayNoResults(query);
+                        return;
+                    }
+
+                    // Get video IDs
+                    const videoIds = data.items
+                        .filter(item => item.id.kind === 'youtube#video')
+                        .map(item => item.id.videoId)
+                        .join(',');
+
+                    // Get video details including duration
+                    const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,snippet&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
+                    console.log('Video details URL:', detailsUrl);
+                    console.log('Video IDs:', videoIds);
+                    return fetch(detailsUrl);
+                })
+                .then(response => {
+                    if (!response) return; // Handle case when no videos were found
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Video details API response:', data);
+                    
+                    if (!data) return; // Handle case when no videos were found
+
+                    console.log('Total videos before filtering:', data.items ? data.items.length : 0);
+
+                    // Filter videos by duration (minimum 2 minutes)
+                    const filteredVideos = data.items.filter(video => {
+                        const duration = video.contentDetails.duration; // ISO 8601 format
+                        const durationInSeconds = parseDuration(duration);
+                        return durationInSeconds >= 120; // 2 minutes = 120 seconds
+                    });
+
+                    console.log('Videos after duration filtering:', filteredVideos.length);
+
+                    if (filteredVideos.length === 0) {
+                        console.log('No videos meet duration criteria');
+                        displayNoResults(query, true);
+                    } else {
+                        console.log('Displaying filtered videos');
+                        displayYouTubeResults(filteredVideos, query);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching YouTube data:', error);
+                    
+                    // Check if it's an API key error
+                    let errorMessage = 'Sorry, there was an error with your search. Please try again later.';
+                    if (error.message.includes('403') || error.message.includes('API key')) {
+                        errorMessage = 'API key error. Please check the YouTube API configuration.';
+                    } else if (error.message.includes('400')) {
+                        errorMessage = 'Invalid search query. Please try a different search term.';
+                    }
+                    
+                    searchResults.innerHTML = `
+                        <div class="error-container">
+                            <h3>Search Results for "${query}"</h3>
+                            <div class="error-message">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                <p>${errorMessage}</p>
+                            </div>
+                            <button class="retry-button" onclick="newSearch()">Try Another Search</button>
+                        </div>
+                    `;
+
+                    // Show search results
+                    searchResults.classList.add('visible');
+                });
+        }
+
+        // Parse ISO 8601 duration format to seconds
+        function parseDuration(duration) {
+            const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+
+            const hours = (match[1] && parseInt(match[1])) || 0;
+            const minutes = (match[2] && parseInt(match[2])) || 0;
+            const seconds = (match[3] && parseInt(match[3])) || 0;
+
+            return hours * 3600 + minutes * 60 + seconds;
+        }
+
+        // Display no results message
+        function displayNoResults(query, filteredOut = false) {
+            const message = filteredOut ?
+                "No videos found that are at least 2 minutes long. Try another search term." :
+                "No results found. Try another search term.";
+
+            searchResults.innerHTML = `
+                <div class="error-container">
+                    <h3>Search Results for "${query}"</h3>
+                    <div class="no-results">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <p>${message}</p>
+                    </div>
+                    <button class="retry-button" onclick="newSearch()">Try Another Search</button>
+                </div>
+            `;
+
+            // Show search results
+            searchResults.classList.add('visible');
+        }
+
+        function displayYouTubeResults(filteredVideos, query) {
+            console.log('displayYouTubeResults called with:', filteredVideos.length, 'videos');
+            
+            if (!filteredVideos || filteredVideos.length === 0) {
+                console.log('No filtered videos to display');
+                displayNoResults(query, true);
+                return;
+            }
+
+            // Store the results and query globally for pagination
+            currentSearchResults = filteredVideos;
+            currentQuery = query;
+            currentPage = 1;
+
+            console.log('Stored results globally, calling displayResultsPage');
+            // Display the results for the current page
+            displayResultsPage(currentPage);
+        }
+
+        function displayResultsPage(page) {
+            console.log('displayResultsPage called with page:', page);
+            console.log('currentSearchResults length:', currentSearchResults.length);
+            console.log('resultsPerPage:', resultsPerPage);
+            
+            // Calculate start and end indices for the current page
+            const startIndex = (page - 1) * resultsPerPage;
+            const endIndex = Math.min(startIndex + resultsPerPage, currentSearchResults.length);
+
+            console.log('Page indices:', startIndex, 'to', endIndex);
+
+            // Get the subset of results for this page
+            const pageResults = currentSearchResults.slice(startIndex, endIndex);
+            
+            console.log('Page results length:', pageResults.length);
+
+            let resultsHTML = `
+                <h3>Search Results for "${currentQuery}"</h3>
+                <p class="results-count">Showing ${startIndex + 1}-${endIndex} of ${currentSearchResults.length} results</p>
+                <div class="grid-results">
+            `;
+
+            // Generate HTML for each result in grid layout
+            pageResults.forEach(item => {
+                // Get video ID - handle both formats (from search API and videos API)
+                const videoId = typeof item.id === 'object' ? item.id.videoId : item.id;
+                const title = item.snippet.title;
+                const description = item.snippet.description;
+                const thumbnail = item.snippet.thumbnails.high ? item.snippet.thumbnails.high.url : item.snippet.thumbnails.medium.url;
+                const channelTitle = item.snippet.channelTitle;
+                const publishedAt = new Date(item.snippet.publishedAt).toLocaleDateString();
+
+                // Format duration
+                const duration = item.contentDetails.duration;
+                const formattedDuration = formatDuration(duration);
+
+                // Format view count
+                const viewCount = item.statistics ? formatViewCount(item.statistics.viewCount) : 'N/A';
+
+                resultsHTML += `
+                    <div class="grid-item" onclick="window.open('player.html?v=${videoId}', '_blank')" style="cursor:pointer;">
+                        <div class="grid-thumbnail">
+                            <img src="${thumbnail}" alt="${title}">
+                            <span class="video-duration">${formattedDuration}</span>
+                        </div>
+                        <div class="grid-info">
+                            <h4>${title}</h4>
+                            <p class="grid-channel-info">${channelTitle}</p>
+                            <p class="grid-stats">${viewCount} views • ${publishedAt}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            resultsHTML += `</div>`; // Close grid-results div
+
+            console.log('Generated HTML length:', resultsHTML.length);
+
+            // Create pagination controls
+            const totalPages = Math.ceil(currentSearchResults.length / resultsPerPage);
+
+            if (totalPages > 1) {
+                resultsHTML += '<div class="pagination">';
+
+                // Previous button
+                const prevDisabled = page === 1 ? 'disabled' : '';
+                resultsHTML += `
+                    <button class="pagination-button ${prevDisabled}" onclick="changePage(${page - 1})" ${prevDisabled}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    const activeClass = i === page ? 'active' : '';
+                    resultsHTML += `<button class="pagination-button ${activeClass}" onclick="changePage(${i})">${i}</button>`;
+                }
+
+                // Next button
+                const nextDisabled = page === totalPages ? 'disabled' : '';
+                resultsHTML += `
+                    <button class="pagination-button ${nextDisabled}" onclick="changePage(${page + 1})" ${nextDisabled}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                `;
+
+                resultsHTML += '</div>';
+            }
+
+            // Add a "New Search" button at the bottom
+            resultsHTML += `
+                <div class="new-search-container">
+                    <button class="retry-button" onclick="newSearch()">New Search</button>
+                </div>
+            `;
+
+            console.log('Final HTML length:', resultsHTML.length);
+            console.log('Setting searchResults.innerHTML');
+
+            searchResults.innerHTML = resultsHTML;
+            
+            console.log('searchResults.innerHTML set successfully');
+
+            // Show search results
+            searchResults.classList.add('visible');
+
+            // Smooth scroll to the search results
+            searchResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Format ISO 8601 duration to human readable format
+        function formatDuration(isoDuration) {
+            const hours = isoDuration.match(/(\d+)H/);
+            const minutes = isoDuration.match(/(\d+)M/);
+            const seconds = isoDuration.match(/(\d+)S/);
+
+            let result = '';
+
+            if (hours) result += hours[1] + ':';
+
+            if (minutes) {
+                if (hours) {
+                    result += minutes[1].padStart(2, '0') + ':';
+                } else {
+                    result += minutes[1] + ':';
+                }
+            } else {
+                if (hours) result += '00:';
+                else result += '0:';
+            }
+
+            if (seconds) {
+                result += seconds[1].padStart(2, '0');
+            } else {
+                result += '00';
+            }
+
+            return result;
+        }
+
+        // Format view count with commas
+        function formatViewCount(count) {
+            if (!count) return '0';
+
+            if (count >= 1000000) {
+                return Math.floor(count / 1000000) + 'M';
+            } else if (count >= 1000) {
+                return Math.floor(count / 1000) + 'K';
+            } else {
+                return count;
+            }
+        }
+
+        // Corner logo click handler - scroll back to top with slower animation
+        cornerLogo.addEventListener('click', () => {
+            // First hide the search results if they're visible
+            if (searchResults.classList.contains('visible')) {
+                searchResults.classList.remove('visible');
+                setTimeout(() => {
+                    homeSectionTitle.classList.add('visible');
+                    homeGrid.classList.add('visible');
+                    populateHomeGrid();
+                }, 100);
+            }
+
+            // Then scroll to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+            // Show the main logo again after a delay
+            setTimeout(() => {
+                if (window.scrollY < window.innerHeight * 0.2) {
+                    logoContainer.classList.remove('hidden');
+                    scrollIndicator.classList.remove('hidden');
+                }
+            }, 500);
+        });
+
+        // History button click handler
+        historyBtn.addEventListener('click', () => {
+            historyModal.classList.add('active');
+            loadHistory();
+        });
+
+        // Close history modal
+        historyCloseBtn.addEventListener('click', () => {
+            historyModal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        historyModal.addEventListener('click', (e) => {
+            if (e.target === historyModal) {
+                historyModal.classList.remove('active');
+            }
+        });
+
+        // Trigger the animation once on page load after a short delay
+        setTimeout(() => {
+            const charElements = document.querySelectorAll('.char');
+            charElements.forEach((charElement, index) => {
+                setTimeout(() => {
+                    animateChar(charElement);
+                }, index * 150); // Longer stagger for more visible effect
+            });
+        }, 1500); // Longer initial delay
+
+        // Check if the device is in landscape mode and has a small height
+        function checkOrientation() {
+            if (window.innerHeight < 500 && window.innerWidth > window.innerHeight) {
+                document.body.classList.add('landscape-small');
+            } else {
+                document.body.classList.remove('landscape-small');
+            }
+        }
+
+        // Run on load and resize
+        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+
+        // Initialize the application
+        window.addEventListener('load', () => {
+            
+            // Add debug info to console
+            console.log('Kesh_v Search Engine loaded successfully');
+            console.log('Available functions:');
+            console.log('- performSearch(): Perform a search');
+            console.log('- newSearch(): Start a new search');
+            console.log('- clearHistory(): Clear search history');
+            console.log('- populateHomeGrid(): Populate home grid with sample videos');
+            console.log('- handleHomeVideoClick(videoId): Handle home video clicks');
+            console.log('- refreshRecommendations(): Refresh with new random recommendations');
+            console.log('Keyboard shortcuts:');
+            console.log('- Ctrl/Cmd + K: Focus search input');
+            console.log('- Escape: Close history modal');
+        });
+
+        // Function to load search history from localStorage
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            historyList.innerHTML = ''; // Clear previous history
+            history.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                li.addEventListener('click', () => {
+                    searchInput.value = item;
+                    performSearch();
+                    historyModal.classList.remove('active');
+                });
+                historyList.appendChild(li);
+            });
+        }
+
+        // Function to save search history to localStorage
+        function saveHistory(query) {
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            if (!history.includes(query)) {
+                history.unshift(query); // Add to the beginning of the array
+                if (history.length > 10) { // Keep only the last 10 searches
+                    history.pop();
+                }
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+                loadHistory(); // Update the history list in the modal
+            }
+        }
+
+        // Function to clear search history (for testing)
+        function clearHistory() {
+            localStorage.removeItem('searchHistory');
+            loadHistory();
+        }
+
+
+
+        // Function to populate home grid with random YouTube videos
+        function populateHomeGrid() {
+            // Show loading state
+            homeGrid.innerHTML = `
+                <div class="loading-container" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Loading trending videos...</p>
+                </div>
+            `;
+
+            // Popular search terms for variety
+            const popularTerms = [
+                'music', 'gaming', 'cooking', 'travel', 'fitness', 
+                'comedy', 'education', 'technology', 'sports', 'news',
+                'entertainment', 'how to', 'tutorial', 'reviews', 'vlogs'
+            ];
+
+            // Get a random search term
+            const randomTerm = popularTerms[Math.floor(Math.random() * popularTerms.length)];
+            
+            console.log('Fetching random videos for term:', randomTerm);
+
+            // Fetch videos from YouTube API
+            const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&type=video&q=${encodeURIComponent(randomTerm)}&key=${YOUTUBE_API_KEY}`;
+
+            fetch(searchUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.items || data.items.length === 0) {
+                        throw new Error('No videos found');
+                    }
+
+                    // Get video IDs
+                    const videoIds = data.items
+                        .filter(item => item.id.kind === 'youtube#video')
+                        .map(item => item.id.videoId)
+                        .join(',');
+
+                    // Get video details including duration and statistics
+                    const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,snippet&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
+                    return fetch(detailsUrl);
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.items || data.items.length === 0) {
+                        throw new Error('No video details found');
+                    }
+
+                    // Filter videos by duration (minimum 2 minutes, maximum 2 hours)
+                    const filteredVideos = data.items.filter(video => {
+                        const duration = video.contentDetails.duration;
+                        const durationInSeconds = parseDuration(duration);
+                        return durationInSeconds >= 120 && durationInSeconds <= 7200; // 2 min to 2 hours
+                    });
+
+                    if (filteredVideos.length === 0) {
+                        throw new Error('No videos meet duration criteria');
+                    }
+
+                    // Shuffle and take first 8 videos
+                    const shuffledVideos = [...filteredVideos].sort(() => Math.random() - 0.5);
+                    const randomVideos = shuffledVideos.slice(0, 8);
+
+                    console.log('Displaying', randomVideos.length, 'random videos');
+
+                    // Generate HTML for the videos
+                    homeGrid.innerHTML = randomVideos.map(video => {
+                        const videoId = video.id;
+                        const title = video.snippet.title;
+                        const channelTitle = video.snippet.channelTitle;
+                        const thumbnail = video.snippet.thumbnails.high ? video.snippet.thumbnails.high.url : video.snippet.thumbnails.medium.url;
+                        const duration = formatDuration(video.contentDetails.duration);
+                        const viewCount = video.statistics ? formatViewCount(video.statistics.viewCount) : 'N/A';
+
+                        return `
+                            <div class="home-grid-item" onclick="handleHomeVideoClick('${videoId}')">
+                                <div class="home-thumbnail">
+                                    <img src="${thumbnail}" alt="${title}">
+                                    <div class="home-thumbnail-overlay"></div>
+                                    <span class="home-video-duration">${duration}</span>
+                                </div>
+                                <div class="home-video-info">
+                                    <div class="home-video-title">${title}</div>
+                                    <div class="home-channel-name">${channelTitle}</div>
+                                    <div class="home-video-stats">${viewCount} views</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                })
+                .catch(error => {
+                    console.error('Error fetching random videos:', error);
+                    // Fallback to placeholder content
+                    homeGrid.innerHTML = `
+                        <div class="error-container" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <p>Unable to load trending videos. Please try refreshing the page.</p>
+                            <button onclick="populateHomeGrid()" style="margin-top: 10px; padding: 8px 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 4px; cursor: pointer;">Retry</button>
+                        </div>
+                    `;
+                });
+        }
+
+        // Function to handle home video clicks
+        function handleHomeVideoClick(videoId) {
+            // Open the video in the player page
+            window.open('player.html?v=' + videoId, '_blank');
+        }
+
+        // Function to reset page state for testing
+        function resetPageState() {
+            // Clear search results
+            searchResults.classList.remove('visible');
+            searchResults.innerHTML = '';
+            
+            // Show home grid
+            homeSectionTitle.classList.add('visible');
+            homeGrid.classList.add('visible');
+            
+            // Clear search input
+            searchInput.value = '';
+            
+            // Show main logo if at top
+            if (window.scrollY < window.innerHeight * 0.2) {
+                logoContainer.classList.remove('hidden');
+                scrollIndicator.classList.remove('hidden');
+            }
+            
+            // Scroll to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            
+            // Refresh with new random recommendations
+            populateHomeGrid();
+            
+            console.log('Page state reset for testing');
+        }
+
+        // Make functions globally available for testing
+        window.resetPageState = resetPageState;
+        window.clearHistory = clearHistory;
+        window.handleHomeVideoClick = handleHomeVideoClick;
+        window.populateHomeGrid = populateHomeGrid;
+        
+        // Function to refresh recommendations
+        window.refreshRecommendations = function() {
+            populateHomeGrid();
+            console.log('Recommendations refreshed with new random videos');
+        };
+
+
+
+        // Add clear history button to modal
+        window.addEventListener('load', () => {
+            const historyModalContent = document.querySelector('.history-modal-content');
+            if (historyModalContent) {
+                const clearButton = document.createElement('button');
+                clearButton.textContent = 'Clear History';
+                clearButton.style.cssText = `
+                    background: rgba(255, 0, 0, 0.1);
+                    color: #ff6b6b;
+                    border: 1px solid rgba(255, 0, 0, 0.3);
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-family: 'Arvo', serif;
+                    cursor: pointer;
+                    margin-top: 15px;
+                    transition: all 0.3s ease;
+                `;
+                clearButton.addEventListener('mouseenter', () => {
+                    clearButton.style.background = 'rgba(255, 0, 0, 0.2)';
+                });
+                clearButton.addEventListener('mouseleave', () => {
+                    clearButton.style.background = 'rgba(255, 0, 0, 0.1)';
+                });
+                clearButton.addEventListener('click', clearHistory);
+                historyModalContent.appendChild(clearButton);
+            }
+        });
+
+        // Show dropdown on input focus or input
+        searchInput.addEventListener('focus', showSearchSuggestions);
+        searchInput.addEventListener('input', showSearchSuggestions);
+        searchInput.addEventListener('click', showSearchSuggestions);
+
+        // Hide dropdown on blur (with a slight delay to allow click)
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                searchHistoryDropdown.classList.remove('visible');
+            }, 150);
+        });
+
+        // Hide dropdown when a search is performed
+        searchButton.addEventListener('mousedown', () => {
+            searchHistoryDropdown.classList.remove('visible');
+        });
+
+        // Show suggestions based on input
+        function showSearchSuggestions() {
+            const value = searchInput.value.trim();
+            if (value.length < 4) {
+                searchHistoryDropdown.classList.remove('visible');
+                return;
+            }
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            // Filter for suggestions that include the input (case-insensitive)
+            const suggestions = history.filter(item =>
+                item.toLowerCase().includes(value.toLowerCase())
+            ).slice(0, 6);
+
+            if (suggestions.length === 0) {
+                searchHistoryDropdown.classList.remove('visible');
+                return;
+            }
+            searchHistoryDropdown.innerHTML = suggestions.map(item =>
+                `<div class="dropdown-item">${item}</div>`
+            ).join('');
+            searchHistoryDropdown.classList.add('visible');
+        }
+
+        // Handle click on dropdown item
+        searchHistoryDropdown.addEventListener('mousedown', function (e) {
+            if (e.target.classList.contains('dropdown-item')) {
+                searchInput.value = e.target.textContent;
+                performSearch();
+                searchHistoryDropdown.classList.remove('visible');
+            }
+        });
+
+        // Suppress deprecation warnings (optional)
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('mozInputSource')) {
+                return; // Suppress this specific warning
+            }
+            originalWarn.apply(console, args);
+        };
+    </script>
+</body>
+
+</html>

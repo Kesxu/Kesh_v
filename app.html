@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kesh_v - Unified App</title>
+    <style>
+        /* --- Merged CSS from all three files, with view-specific scoping --- */
+        /* ... (Insert all CSS from index.html, player.html, and history.html here, with any necessary adjustments for SPA) ... */
+    </style>
+</head>
+<body>
+    <!-- Home/Search View -->
+    <section id="view-home">
+        <!-- ... (Insert full index.html content here, with navigation buttons using JS and no external links) ... -->
+    </section>
+    <!-- Player View -->
+    <section id="view-player" style="display:none;">
+        <!-- ... (Insert full player.html content here, with navigation buttons using JS and no external links) ... -->
+    </section>
+    <!-- History View -->
+    <section id="view-history" style="display:none;">
+        <!-- ... (Insert full history.html content here, with navigation buttons using JS and no external links) ... -->
+    </section>
+    <!-- Audio element removed due to 403 error -->
+    <script>
+        // --- SPA Navigation ---
+        function showView(view) {
+            document.getElementById('view-home').style.display = view === 'home' ? '' : 'none';
+            document.getElementById('view-player').style.display = view === 'player' ? '' : 'none';
+            document.getElementById('view-history').style.display = view === 'history' ? '' : 'none';
+            window.scrollTo(0, 0);
+        }
+        window.addEventListener('hashchange', handleHash);
+        function handleHash() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash.startsWith('player-')) {
+                const videoId = hash.replace('player-', '');
+                showView('player');
+                loadPlayerView(videoId);
+            } else if (hash === 'history') {
+                showView('history');
+                loadHistoryView();
+            } else {
+                showView('home');
+            }
+        }
+        window.addEventListener('DOMContentLoaded', handleHash);
+        // --- Merged JS for all features (search, player, break timer, history, etc.) ---
+        // ... (Insert all JavaScript from index.html, player.html, and history.html here, refactored for SPA and scoped to each view) ...
+    </script>
+</body>
+</html>

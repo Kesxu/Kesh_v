@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: #fff;
+            font-family: 'Arvo', serif;
+            min-height: 100vh;
+        }
+
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            width: 100vw;
+            max-width: 100vw;
+        }
+
+        .left-panel {
+            flex: 3 1 0;
+            min-width: 0;
+            padding: 40px 30px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .video-frame {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .desc-box {
+            margin-top: 24px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 8px;
+            padding: 18px 20px;
+            color: #eee;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            min-height: 60px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .back-btn {
+            margin-top: 30px;
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            color: #fff;
+            font-family: 'Arvo', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .right-panel {
+            flex: 1 1 0;
+            min-width: 220px;
+            max-width: 400px;
+            background: #181818;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 60px 10px 0 10px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .digital-clock {
+            width: 90%;
+            max-width: 260px;
+            background: #111;
+            color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.2rem;
+            text-align: center;
+            padding: 32px 0 24px 0;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            user-select: none;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: #111;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            padding: 6px 10px 6px 4px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            transition: background 0.2s, box-shadow 0.2s, border 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .back-arrow:hover {
+            background: #222;
+            border: 2px solid #333;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .back-arrow svg {
+            width: 28px;
+            height: 28px;
+            display: block;
+            stroke: #fff;
+        }
+
+        @media (max-width: 900px) {
+            .back-arrow {
+                top: 10px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                flex-direction: column;
+            }
+
+            .left-panel,
+            .right-panel {
+                width: 100%;
+                max-width: 100vw;
+                padding: 20px 5vw 0 5vw;
+            }
+
+            .right-panel {
+                min-width: 0;
+                max-width: 100vw;
+                box-shadow: none;
+                align-items: flex-end;
+                padding-top: 20px;
+            }
+
+            .digital-clock {
+                margin: 0 0 20px 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .left-panel,
+            .right-panel {
+                padding: 10px 2vw 0 2vw;
+            }
+
+            .digital-clock {
+                font-size: 1.3rem;
+                padding: 18px 0 12px 0;
+            }
+        }
+
+        .beach-break-btn {
+            background: linear-gradient(135deg, #ffe066 0%, #f9d423 50%, #f83600 100%);
+            color: #fff;
+            font-family: 'Arvo', serif;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 32px 14px 48px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(249, 212, 35, 0.18), 0 2px 8px rgba(248, 54, 0, 0.08);
+            position: relative;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            outline: none;
+            overflow: hidden;
+        }
+
+        .beach-break-btn::before {
+            content: '\1F3D6';
+            /* Beach with umbrella emoji */
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px #fff8);
+        }
+
+        .beach-break-btn:hover {
+            background: linear-gradient(135deg, #f9d423 0%, #ffe066 50%, #f83600 100%);
+            transform: translateY(-2px) scale(1.03) rotate(-2deg);
+            box-shadow: 0 8px 24px rgba(249, 212, 35, 0.22), 0 4px 16px rgba(248, 54, 0, 0.12);
+        }
+
+        .break-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .break-modal.active {
+            display: flex;
+        }
+
+        .break-modal-content {
+            background: linear-gradient(120deg, #ffe066 0%, #f9d423 60%, #f83600 100%);
+            color: #fff;
+            border-radius: 24px;
+            padding: 36px 32px 32px 32px;
+            min-width: 320px;
+            max-width: 90vw;
+            box-shadow: 0 8px 32px rgba(249, 212, 35, 0.18), 0 2px 8px rgba(248, 54, 0, 0.08);
+            text-align: center;
+            position: relative;
+        }
+
+        .break-modal-content h2 {
+            font-family: 'Rusilla Serif', serif;
+            font-size: 1.5rem;
+            margin-bottom: 18px;
+            color: #fffbe7;
+        }
+
+        .break-choice-btn {
+            background: #fffbe7;
+            color: #f83600;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-family: 'Arvo', serif;
+            padding: 10px 28px;
+            margin: 10px 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 224, 102, 0.18);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .break-choice-btn:hover {
+            background: #ffe066;
+            color: #f9d423;
+        }
+
+        .break-timer {
+            font-size: 2.2rem;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 24px 0 10px 0;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px #f83600aa;
+        }
+
+        .break-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.7rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .break-modal-close:hover {
+            color: #f83600;
+        }
+
+        .break-timer-message {
+            font-size: 1.1rem;
+            margin-top: 12px;
+            color: #fffbe7;
+        }
+
+        .floating-break-btn {
+            position: fixed;
+            right: 32px;
+            bottom: 32px;
+            z-index: 10001;
+            background: linear-gradient(135deg, #ffe066 0%, #f9d423 50%, #f83600 100%);
+            color: #fff;
+            font-family: 'Arvo', serif;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 32px 14px 48px;
+            box-shadow: 0 8px 32px rgba(249, 212, 35, 0.18), 0 4px 16px rgba(248, 54, 0, 0.12);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            outline: none;
+            overflow: hidden;
+            min-width: 160px;
+            max-width: 90vw;
+        }
+
+        .floating-break-btn::before {
+            content: '\1F3D6';
+            font-size: 1.5rem;
+            margin-right: 8px;
+            filter: drop-shadow(0 2px 4px #fff8);
+        }
+
+        .floating-break-btn:hover {
+            background: linear-gradient(135deg, #f9d423 0%, #ffe066 50%, #f83600 100%);
+            transform: translateY(-2px) scale(1.03) rotate(-2deg);
+            box-shadow: 0 12px 32px rgba(249, 212, 35, 0.22), 0 8px 24px rgba(248, 54, 0, 0.12);
+        }
+
+        @media (max-width: 600px) {
+            .floating-break-btn {
+                right: 10px;
+                bottom: 10px;
+                padding: 10px 18px 10px 36px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-arrow" onclick="window.location.href='index.html'" title="Back to Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <div class="main-layout">
+        <div class="left-panel">
+            <div class="video-frame" id="video-frame"></div>
+            <div class="desc-box" id="desc-box">
+                <span id="desc-text">Loading description...</span>
+                <button id="desc-toggle"
+                    style="display:none;margin-top:10px;background:none;border:none;color:#4af;font-family:'Arvo',serif;font-size:1rem;cursor:pointer;">View
+                    More</button>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="digital-clock" id="digital-clock">--:-- --</div>
+            <button class="beach-break-btn" id="beach-break-btn">Take a Break</button>
+            <button class="floating-break-btn" id="floating-break-btn" style="display:none;">⏳ 00:00</button>
+        </div>
+    </div>
+    <div class="break-modal" id="break-modal">
+        <div class="break-modal-content">
+            <button class="break-modal-close" id="break-modal-close" title="Close">&times;</button>
+            <h2>Take a Break! <span style="font-size:1.3em;">&#127958;&#65039;</span></h2>
+            <div id="break-choice-section">
+                <p>How long do you want your break to be?</p>
+                <button class="break-choice-btn" data-minutes="15">15 Minutes</button>
+                <button class="break-choice-btn" data-minutes="30">30 Minutes</button>
+            </div>
+            <div id="break-timer-section" style="display:none;">
+                <div class="break-timer" id="break-timer">00:00</div>
+                <div class="break-timer-message" id="break-timer-message"></div>
+                <button class="break-choice-btn" id="break-reset-btn" style="margin-top:10px;">Reset</button>
+            </div>
+        </div>
+    </div>
+    <!-- Audio element removed due to 403 error -->
+    <script>
+        function getVideoId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('v');
+        }
+        const videoId = getVideoId();
+        console.log('Player: Video ID received:', videoId);
+        if (videoId) {
+            const iframeSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&origin=${window.location.origin}`;
+            console.log('Player: Iframe src:', iframeSrc);
+            document.getElementById('video-frame').innerHTML = `
+                <iframe id="ytplayer" src="${iframeSrc}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" onload="console.log('Player: Iframe loaded successfully')" onerror="console.error('Player: Iframe failed to load')"></iframe>
+            `;
+            // Fetch video details for history
+            fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=AIzaSyCmHFtuxHYX4mCQft0h5OURezhmAnGVK4U`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.items && data.items.length > 0) {
+                        videoTitle = data.items[0].snippet.title;
+                        videoThumbnail = data.items[0].snippet.thumbnails.medium.url;
+                    }
+                });
+            // Fetch video description from YouTube Data API
+            fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=AIzaSyCmHFtuxHYX4mCQft0h5OURezhmAnGVK4U`)
+                .then(r => r.json())
+                .then(data => {
+                    const descText = document.getElementById('desc-text');
+                    const descToggle = document.getElementById('desc-toggle');
+                    if (data.items && data.items.length > 0) {
+                        const fullDesc = data.items[0].snippet.description || 'No description.';
+                        const words = fullDesc.split(/\s+/);
+                        if (words.length > 200) {
+                            let collapsed = true;
+                            function renderDesc() {
+                                let descToShow = collapsed ? words.slice(0, 200).join(' ') + '...' : fullDesc;
+                                document.getElementById('desc-text').innerHTML = formatDescription(descToShow);
+                                descToggle.textContent = collapsed ? 'View More' : 'View Less';
+                            }
+                            descToggle.style.display = '';
+                            descToggle.onclick = function () {
+                                collapsed = !collapsed;
+                                renderDesc();
+                            };
+                            renderDesc();
+                        } else {
+                            document.getElementById('desc-text').innerHTML = formatDescription(fullDesc);
+                            descToggle.style.display = 'none';
+                        }
+                    } else {
+                        descText.textContent = 'No description found.';
+                        descToggle.style.display = 'none';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('desc-text').textContent = 'No description found.';
+                    document.getElementById('desc-toggle').style.display = 'none';
+                });
+        } else {
+            document.getElementById('video-frame').innerHTML = '<p>Invalid video ID.</p>';
+            document.getElementById('desc-box').textContent = '';
+        }
+
+        // Digital clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // 0 should be 12
+            const minStr = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('digital-clock').textContent = `${hours}:${minStr} ${ampm}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Track watch duration
+        let watchStartTime = Date.now();
+        let watchInterval;
+        let videoTitle = '';
+        let videoThumbnail = '';
+
+        function saveWatchHistory(durationWatched) {
+            const history = JSON.parse(localStorage.getItem('watchHistory') || '[]');
+            const now = new Date();
+            // Remove any previous entry for this video
+            const filtered = history.filter(item => item.id !== videoId);
+            filtered.unshift({
+                id: videoId,
+                title: videoTitle,
+                thumbnail: videoThumbnail,
+                watchedAt: now.toISOString(),
+                durationWatched: durationWatched
+            });
+            if (filtered.length > 100) filtered.length = 100;
+            localStorage.setItem('watchHistory', JSON.stringify(filtered));
+        }
+        function updateWatchDuration() {
+            // Fallback: use time spent on page
+            const durationWatched = Math.floor((Date.now() - watchStartTime) / 1000);
+            saveWatchHistory(durationWatched);
+        }
+        watchInterval = setInterval(updateWatchDuration, 10 * 1000); // Save every 10 seconds
+        window.addEventListener('beforeunload', () => {
+            updateWatchDuration();
+            clearInterval(watchInterval);
+        });
+
+        // Format description structurally
+        function formatDescription(desc) {
+            // Convert URLs to clickable links
+            desc = desc.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#4af;word-break:break-all;">$1</a>');
+            // Highlight timestamps (e.g., 0:00, 12:34, 1:02:03)
+            desc = desc.replace(/(\b\d{1,2}:\d{2}(?::\d{2})?\b)/g, '<span style="color:#ffd700;background:rgba(255,255,255,0.07);padding:2px 6px;border-radius:6px;font-family:monospace;">$1</span>');
+            // Split into paragraphs by double line breaks or single line breaks
+            const paragraphs = desc.split(/\n{2,}|\r{2,}/g).map(p => p.trim()).filter(Boolean);
+            return paragraphs.map(p => `<p style='margin:0 0 8px 0;'>${p.replace(/\n|\r/g, '<br>')}</p>`).join('');
+        }
+
+        // Take a Break Timer Logic
+        const beachBreakBtn = document.getElementById('beach-break-btn');
+        const floatingBreakBtn = document.getElementById('floating-break-btn');
+        const breakAlarmAudio = document.getElementById('break-alarm-audio');
+        const breakModal = document.getElementById('break-modal');
+        const breakModalClose = document.getElementById('break-modal-close');
+        const breakChoiceSection = document.getElementById('break-choice-section');
+        const breakTimerSection = document.getElementById('break-timer-section');
+        const breakTimer = document.getElementById('break-timer');
+        const breakTimerMessage = document.getElementById('break-timer-message');
+        const breakResetBtn = document.getElementById('break-reset-btn');
+        let breakInterval = null;
+        let breakEndTime = null;
+        let breakDuration = 0;
+
+        function showFloatingBreakBtn(timeStr) {
+            floatingBreakBtn.textContent = `⏳ ${timeStr}`;
+            floatingBreakBtn.style.display = 'flex';
+            beachBreakBtn.style.display = 'none';
+        }
+        function hideFloatingBreakBtn() {
+            floatingBreakBtn.style.display = 'none';
+            beachBreakBtn.style.display = '';
+        }
+        beachBreakBtn.addEventListener('click', () => {
+            breakModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        breakModalClose.addEventListener('click', closeBreakModal);
+        // Clicking outside modal closes it
+        breakModal.addEventListener('mousedown', function (e) {
+            if (e.target === breakModal) closeBreakModal();
+        });
+        // Handle break time selection
+        breakChoiceSection.querySelectorAll('.break-choice-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                breakDuration = parseInt(this.getAttribute('data-minutes'), 10) * 60; // seconds
+                breakEndTime = Date.now() + breakDuration * 1000;
+                breakChoiceSection.style.display = 'none';
+                breakTimerSection.style.display = '';
+                startBreakTimer();
+            });
+        });
+        floatingBreakBtn.addEventListener('click', () => {
+            breakModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        breakResetBtn.addEventListener('click', function () {
+            clearInterval(breakInterval);
+            breakTimer.textContent = '00:00';
+            breakTimerMessage.textContent = '';
+            breakChoiceSection.style.display = '';
+            breakTimerSection.style.display = 'none';
+            hideFloatingBreakBtn();
+        });
+        function startBreakTimer() {
+            updateBreakTimer();
+            breakInterval = setInterval(updateBreakTimer, 1000);
+        }
+        function updateBreakTimer() {
+            const now = Date.now();
+            let secondsLeft = Math.max(0, Math.floor((breakEndTime - now) / 1000));
+            let min = Math.floor(secondsLeft / 60);
+            let sec = secondsLeft % 60;
+            const timeStr = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+            breakTimer.textContent = timeStr;
+            showFloatingBreakBtn(timeStr);
+            if (secondsLeft <= 0) {
+                clearInterval(breakInterval);
+                breakTimerMessage.textContent = "⛱️ Time's up! Hope you enjoyed your break!";
+                breakTimer.textContent = '00:00';
+                hideFloatingBreakBtn();
+                // Play alarm sound (if audio element exists)
+                if (breakAlarmAudio) {
+                    breakAlarmAudio.currentTime = 0;
+                    breakAlarmAudio.play().catch(e => console.log('Audio play failed:', e));
+                }
+                // Optionally, play a sound or show a browser notification
+                if (window.Notification && Notification.permission === 'granted') {
+                    new Notification("Break Over!", { body: "Time to get back to learning!" });
+                } else if (window.Notification && Notification.permission !== 'denied') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            new Notification("Break Over!", { body: "Time to get back to learning!" });
+                        }
+                    });
+                } else {
+                    alert("Break Over! Time to get back to learning!");
+                }
+            } else {
+                breakTimerMessage.textContent = '';
+            }
+        }
+        // Hide floating button when modal is closed or timer reset
+        function closeBreakModal() {
+            breakModal.classList.remove('active');
+            clearInterval(breakInterval);
+            breakTimer.textContent = '00:00';
+            breakTimerMessage.textContent = '';
+            hideFloatingBreakBtn();
+            document.body.style.overflow = '';
+        }
+    </script>
+</body>
+
+</html>
